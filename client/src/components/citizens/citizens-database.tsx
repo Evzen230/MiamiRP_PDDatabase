@@ -32,8 +32,9 @@ export default function CitizensDatabase() {
     
     const matchesStatus = statusFilter === "" || statusFilter === "all" ||
       (statusFilter === "wanted" && citizen.isWanted) ||
+      (statusFilter === "amber" && citizen.isAmber) ||
       (statusFilter === "deceased" && citizen.isDeceased) ||
-      (statusFilter === "active" && !citizen.isWanted && !citizen.isDeceased);
+      (statusFilter === "active" && !citizen.isWanted && !citizen.isDeceased && !citizen.isAmber);
     
     return matchesSearch && matchesStatus;
   });
@@ -41,6 +42,9 @@ export default function CitizensDatabase() {
   const getStatusBadge = (citizen: Citizen) => {
     if (citizen.isWanted) {
       return <FlashBadge variant="destructive">WANTED</FlashBadge>;
+    }
+    if (citizen.isAmber) {
+      return <FlashBadge variant="destructive" className="bg-amber-600">AMBER ALERT</FlashBadge>;
     }
     if (citizen.isDeceased) {
       return <Badge variant="secondary">DECEASED</Badge>;
@@ -95,6 +99,7 @@ export default function CitizensDatabase() {
                 <SelectItem value="all" className="text-white">All Status</SelectItem>
                 <SelectItem value="active" className="text-white">Active</SelectItem>
                 <SelectItem value="wanted" className="text-white">Wanted</SelectItem>
+                <SelectItem value="amber" className="text-white">Amber Alert</SelectItem>
                 <SelectItem value="deceased" className="text-white">Deceased</SelectItem>
               </SelectContent>
             </Select>

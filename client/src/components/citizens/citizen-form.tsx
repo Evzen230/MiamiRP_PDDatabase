@@ -21,7 +21,6 @@ interface CitizenFormProps {
 export default function CitizenForm({ citizen, onClose, onSuccess }: CitizenFormProps) {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    citizenId: citizen?.citizenId || "",
     firstName: citizen?.firstName || "",
     lastName: citizen?.lastName || "",
     dateOfBirth: citizen?.dateOfBirth || "",
@@ -104,17 +103,6 @@ export default function CitizenForm({ citizen, onClose, onSuccess }: CitizenForm
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="text-slate-300">Citizen ID</Label>
-              <Input
-                value={formData.citizenId}
-                onChange={(e) => handleInputChange("citizenId", e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white"
-                placeholder="MIA-123456"
-                required
-              />
-            </div>
-
             <div className="space-y-2">
               <Label className="text-slate-300">First Name</Label>
               <Input

@@ -46,6 +46,8 @@ export const vehicles = pgTable("vehicles", {
   model: text("model").notNull(),
   year: integer("year").notNull(),
   color: text("color").notNull(),
+  type: text("type").notNull(), // sedan, suv, truck, motorcycle, etc.
+  modifications: text("modifications"), // any modifications to the vehicle
   vin: text("vin").unique(),
   ownerId: integer("owner_id").references(() => citizens.id).notNull(),
   isRegistered: boolean("is_registered").notNull().default(true),
@@ -77,8 +79,8 @@ export const businesses = pgTable("businesses", {
   businessName: text("business_name").notNull(),
   businessLicense: text("business_license").notNull().unique(),
   ownerId: integer("owner_id").references(() => citizens.id).notNull(),
-  businessType: text("business_type").notNull(),
-  address: text("address").notNull(),
+  type: text("type").notNull(), // restaurant, retail, food truck, etc.
+  address: text("address").notNull(), // address or license plate for food trucks
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -90,8 +92,8 @@ export const businesses = pgTable("businesses", {
 export const properties = pgTable("properties", {
   id: serial("id").primaryKey(),
   address: text("address").notNull(),
-  ownerId: integer("owner_id").references(() => citizens.id),
-  propertyType: text("property_type").notNull(), // house, apartment, commercial
+  ownerId: integer("owner_id").references(() => citizens.id).notNull(),
+  type: text("type").notNull(), // house, apartment, commercial, warehouse
   isOwned: boolean("is_owned").notNull().default(true),
   marketValue: integer("market_value"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -197,8 +199,11 @@ export const insertUserSchema = createInsertSchema(users).omit({
 
 export const insertCitizenSchema = createInsertSchema(citizens).omit({
   id: true,
+  citizenId: true,
   createdAt: true,
   updatedAt: true,
+  createdBy: true,
+  updatedBy: true,
 });
 
 export const insertVehicleSchema = createInsertSchema(vehicles).omit({

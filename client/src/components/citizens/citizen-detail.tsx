@@ -1,12 +1,16 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Edit, Car, Plus, AlertTriangle } from "lucide-react";
-import { Citizen, Vehicle, CriminalRecord } from "@shared/schema";
+import { Edit, Car, Plus, AlertTriangle, Home, Building } from "lucide-react";
+import { Citizen, Vehicle, CriminalRecord, Property, Business, Permit } from "@shared/schema";
 import FlashBadge from "@/components/ui/flash-badge";
+import VehicleForm from "./vehicle-form";
+import PropertyForm from "./property-form";
+import BusinessForm from "./business-form";
 
 interface CitizenDetailProps {
   citizen: Citizen;
@@ -15,12 +19,28 @@ interface CitizenDetailProps {
 }
 
 export default function CitizenDetail({ citizen, onClose, onEdit }: CitizenDetailProps) {
-  const { data: vehicles = [] } = useQuery<Vehicle[]>({
+  const [showVehicleForm, setShowVehicleForm] = useState(false);
+  const [showPropertyForm, setShowPropertyForm] = useState(false);
+  const [showBusinessForm, setShowBusinessForm] = useState(false);
+
+  const { data: vehicles = [], refetch: refetchVehicles } = useQuery<Vehicle[]>({
     queryKey: [`/api/citizens/${citizen.id}/vehicles`],
   });
 
-  const { data: criminalRecords = [] } = useQuery<CriminalRecord[]>({
+  const { data: criminalRecords = [], refetch: refetchCriminalRecords } = useQuery<CriminalRecord[]>({
     queryKey: [`/api/citizens/${citizen.id}/criminal-records`],
+  });
+
+  const { data: properties = [], refetch: refetchProperties } = useQuery<Property[]>({
+    queryKey: [`/api/citizens/${citizen.id}/properties`],
+  });
+
+  const { data: businesses = [], refetch: refetchBusinesses } = useQuery<Business[]>({
+    queryKey: [`/api/citizens/${citizen.id}/businesses`],
+  });
+
+  const { data: permits = [], refetch: refetchPermits } = useQuery<Permit[]>({
+    queryKey: [`/api/citizens/${citizen.id}/permits`],
   });
 
   const getStatusBadge = () => {
@@ -108,7 +128,12 @@ export default function CitizenDetail({ citizen, onClose, onEdit }: CitizenDetai
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-white text-lg">Registered Vehicles</CardTitle>
-                  <Button size="sm" variant="outline" className="border-slate-600">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="border-slate-600"
+                    onClick={() => setShowVehicleForm(true)}
+                  >
                     <Plus className="h-4 w-4 mr-2" />
                     Add Vehicle
                   </Button>
@@ -134,6 +159,209 @@ export default function CitizenDetail({ citizen, onClose, onEdit }: CitizenDetai
               </CardContent>
             </Card>
             
+            {/* Properties */}
+            <Card className="bg-slate-700 border-slate-600">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-white text-lg">Properties</CardTitle>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="border-slate-600"
+                    onClick={() => setShowPropertyForm(true)}
+                  >
+                    <Home className="h-4 w-4 mr-2" />
+                    Add Property
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {properties.length > 0 ? (
+                  <div className="space-y-2">
+                    {properties.map((property) => (
+                      <div key={property.id} className="p-2 bg-slate-600 rounded">
+                        <div className="text-slate-200 font-medium">{property.address}</div>
+                        <div className="text-slate-300 text-xs">{property.type}</div>
+                        {property.marketValue && (
+                          <div className="text-slate-400 text-xs">Value: ${property.marketValue.toLocaleString()}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-slate-400 text-sm">No properties registered</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Businesses */}
+            <Card className="bg-slate-700 border-slate-600">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-white text-lg">Businesses</CardTitle>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="border-slate-600"
+                    onClick={() => setShowBusinessForm(true)}
+                  >
+                    <Building className="h-4 w-4 mr-2" />
+                    Add Business
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {businesses.length > 0 ? (
+                  <div className="space-y-2">
+                    {businesses.map((business) => (
+                      <div key={business.id} className="p-2 bg-slate-600 rounded">
+                        <div className="text-slate-200 font-medium">{business.businessName}</div>
+                        <div className="text-slate-300 text-xs">{business.type}</div>
+                        <div className="text-slate-400 text-xs">{business.address}</div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-slate-400 text-sm">No businesses registered</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Permits */}
+            <Card className="bg-slate-700 border-slate-600">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-white text-lg">Permits & Licenses</CardTitle>
+                  <Button size="sm" variant="outline" className="border-slate-600">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Permit
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {permits.length > 0 ? (
+                  <div className="space-y-2">
+                    {permits.map((permit) => (
+                      <div key={permit.id} className="p-2 bg-slate-600 rounded">
+                        <div className="text-slate-200 font-medium">{permit.permitType}</div>
+                        <div className="text-slate-300 text-xs">#{permit.permitNumber}</div>
+                        <div className={`text-xs ${permit.isValid ? 'text-green-400' : 'text-red-400'}`}>
+                          {permit.isValid ? 'Valid' : 'Expired'}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-slate-400 text-sm">No permits or licenses</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Properties */}
+            <Card className="bg-slate-700 border-slate-600">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-white text-lg">Properties</CardTitle>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="border-slate-600"
+                    onClick={() => setShowPropertyForm(true)}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Property
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {properties.length > 0 ? (
+                  <div className="space-y-2">
+                    {properties.map((property) => (
+                      <div key={property.id} className="p-2 bg-slate-600 rounded">
+                        <div className="font-medium text-slate-200">{property.address}</div>
+                        <div className="text-xs text-slate-300">
+                          {property.type} • {property.marketValue ? `$${property.marketValue.toLocaleString()}` : 'No value set'}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-slate-400 text-sm">No properties registered</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Businesses */}
+            <Card className="bg-slate-700 border-slate-600">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-white text-lg">Businesses</CardTitle>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="border-slate-600"
+                    onClick={() => setShowBusinessForm(true)}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Business
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {businesses.length > 0 ? (
+                  <div className="space-y-2">
+                    {businesses.map((business) => (
+                      <div key={business.id} className="p-2 bg-slate-600 rounded">
+                        <div className="font-medium text-slate-200">{business.businessName}</div>
+                        <div className="text-xs text-slate-300">
+                          {business.type} • {business.address}
+                        </div>
+                        <div className="text-xs text-slate-400">
+                          License: {business.businessLicense}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-slate-400 text-sm">No businesses registered</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Permits */}
+            <Card className="bg-slate-700 border-slate-600">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-white text-lg">Permits & Licenses</CardTitle>
+                  <Button size="sm" variant="outline" className="border-slate-600">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Permit
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {permits.length > 0 ? (
+                  <div className="space-y-2">
+                    {permits.map((permit) => (
+                      <div key={permit.id} className="p-2 bg-slate-600 rounded">
+                        <div className="font-medium text-slate-200">{permit.permitType}</div>
+                        <div className="text-xs text-slate-300">
+                          {permit.permitNumber} • {permit.isValid ? 'Valid' : 'Expired'}
+                        </div>
+                        {permit.expiresAt && (
+                          <div className="text-xs text-slate-400">
+                            Expires: {permit.expiresAt}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-slate-400 text-sm">No permits or licenses</p>
+                )}
+              </CardContent>
+            </Card>
+
             {/* Criminal Record */}
             <Card className="bg-slate-700 border-slate-600">
               <CardHeader>
@@ -187,22 +415,42 @@ export default function CitizenDetail({ citizen, onClose, onEdit }: CitizenDetai
             <Edit className="h-4 w-4 mr-2" />
             Edit Record
           </Button>
-          <Button variant="outline" className="border-slate-600">
-            <Car className="h-4 w-4 mr-2" />
-            Register Vehicle
-          </Button>
-          {citizen.isWanted ? (
-            <Button variant="outline" className="border-green-600 text-green-400 hover:bg-green-600 hover:text-white">
-              Clear Wanted Status
-            </Button>
-          ) : (
-            <Button variant="outline" className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white">
-              <AlertTriangle className="h-4 w-4 mr-2" />
-              Mark as Wanted
-            </Button>
-          )}
         </div>
       </DialogContent>
+
+      {/* Forms */}
+      {showVehicleForm && (
+        <VehicleForm
+          citizenId={citizen.id}
+          onClose={() => setShowVehicleForm(false)}
+          onSuccess={() => {
+            refetchVehicles();
+            setShowVehicleForm(false);
+          }}
+        />
+      )}
+
+      {showPropertyForm && (
+        <PropertyForm
+          citizenId={citizen.id}
+          onClose={() => setShowPropertyForm(false)}
+          onSuccess={() => {
+            refetchProperties();
+            setShowPropertyForm(false);
+          }}
+        />
+      )}
+
+      {showBusinessForm && (
+        <BusinessForm
+          citizenId={citizen.id}
+          onClose={() => setShowBusinessForm(false)}
+          onSuccess={() => {
+            refetchBusinesses();
+            setShowBusinessForm(false);
+          }}
+        />
+      )}
     </Dialog>
   );
 }

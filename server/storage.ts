@@ -142,7 +142,17 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createCitizen(insertCitizen: InsertCitizen): Promise<Citizen> {
-    const [citizen] = await db.insert(citizens).values(insertCitizen).returning();
+    // Generate random citizen ID
+    const citizenId = `MIA-${Math.floor(Math.random() * 999999).toString().padStart(6, '0')}`;
+    
+    const citizenData = {
+      ...insertCitizen,
+      citizenId,
+      createdBy: 1, // Default to system user
+      updatedBy: 1
+    };
+    
+    const [citizen] = await db.insert(citizens).values(citizenData).returning();
     return citizen;
   }
 
@@ -294,7 +304,7 @@ export class DatabaseStorage implements IStorage {
       or(
         like(businesses.businessName, `%${query}%`),
         like(businesses.businessLicense, `%${query}%`),
-        like(businesses.businessType, `%${query}%`),
+        like(businesses.type, `%${query}%`),
         like(businesses.address, `%${query}%`)
       )
     ).orderBy(desc(businesses.createdAt));
@@ -336,7 +346,7 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(properties).where(
       or(
         like(properties.address, `%${query}%`),
-        like(properties.propertyType, `%${query}%`)
+        like(properties.type, `%${query}%`)
       )
     ).orderBy(desc(properties.createdAt));
   }

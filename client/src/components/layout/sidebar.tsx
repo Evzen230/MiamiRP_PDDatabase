@@ -15,7 +15,6 @@ export default function Sidebar({ activeSection, onSectionChange }: SidebarProps
   const { user, logoutMutation } = useAuth();
 
   const navigationItems = [
-    { id: "dashboard", label: "Dashboard", icon: Gauge },
     { id: "citizens", label: "Citizens Database", icon: Users },
     { id: "vehicles", label: "Vehicle Registry", icon: Car },
     { id: "businesses", label: "Business Registry", icon: Building },

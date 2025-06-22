@@ -30,7 +30,7 @@ export default function CitizensDatabase() {
       citizen.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       citizen.citizenId.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesStatus = statusFilter === "" ||
+    const matchesStatus = statusFilter === "" || statusFilter === "all" ||
       (statusFilter === "wanted" && citizen.isWanted) ||
       (statusFilter === "deceased" && citizen.isDeceased) ||
       (statusFilter === "active" && !citizen.isWanted && !citizen.isDeceased);
@@ -92,7 +92,7 @@ export default function CitizensDatabase() {
                 <SelectValue placeholder="All Status" />
               </SelectTrigger>
               <SelectContent className="bg-slate-700 border-slate-600">
-                <SelectItem value="" className="text-white">All Status</SelectItem>
+                <SelectItem value="all" className="text-white">All Status</SelectItem>
                 <SelectItem value="active" className="text-white">Active</SelectItem>
                 <SelectItem value="wanted" className="text-white">Wanted</SelectItem>
                 <SelectItem value="deceased" className="text-white">Deceased</SelectItem>

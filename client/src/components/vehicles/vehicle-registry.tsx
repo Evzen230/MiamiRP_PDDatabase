@@ -24,7 +24,9 @@ export default function VehicleRegistry() {
       vehicle.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
       vehicle.color.toLowerCase().includes(searchTerm.toLowerCase());
     
-    return matchesSearch;
+    const matchesType = typeFilter === "" || typeFilter === "all" || vehicle.type === typeFilter;
+    
+    return matchesSearch && matchesType;
   });
 
   const getStatusBadge = (vehicle: Vehicle) => {
@@ -65,7 +67,7 @@ export default function VehicleRegistry() {
                 <SelectValue placeholder="All Types" />
               </SelectTrigger>
               <SelectContent className="bg-slate-700 border-slate-600">
-                <SelectItem value="" className="text-white">All Types</SelectItem>
+                <SelectItem value="all" className="text-white">All Types</SelectItem>
                 <SelectItem value="sedan" className="text-white">Sedan</SelectItem>
                 <SelectItem value="suv" className="text-white">SUV</SelectItem>
                 <SelectItem value="truck" className="text-white">Truck</SelectItem>

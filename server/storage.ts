@@ -84,11 +84,11 @@ export interface IStorage {
   getAllCriminalRecords(): Promise<CriminalRecord[]>;
   getCriminalRecordsByCitizen(citizenId: number): Promise<CriminalRecord[]>;
   
-  sessionStore: session.SessionStore;
+  sessionStore: any;
 }
 
 export class DatabaseStorage implements IStorage {
-  sessionStore: session.SessionStore;
+  sessionStore: any;
 
   constructor() {
     this.sessionStore = new PostgresSessionStore({ 
@@ -120,7 +120,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteUser(id: number): Promise<boolean> {
     const result = await db.delete(users).where(eq(users.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
   }
 
   async getAllUsers(): Promise<User[]> {
@@ -153,7 +153,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteCitizen(id: number): Promise<boolean> {
     const result = await db.delete(citizens).where(eq(citizens.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
   }
 
   async getAllCitizens(): Promise<Citizen[]> {
@@ -202,7 +202,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteVehicle(id: number): Promise<boolean> {
     const result = await db.delete(vehicles).where(eq(vehicles.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
   }
 
   async getAllVehicles(): Promise<Vehicle[]> {
@@ -251,7 +251,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteDriverLicense(id: number): Promise<boolean> {
     const result = await db.delete(driverLicenses).where(eq(driverLicenses.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
   }
 
   async getDriverLicensesByCitizen(citizenId: number): Promise<DriverLicense[]> {
@@ -279,7 +279,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteBusiness(id: number): Promise<boolean> {
     const result = await db.delete(businesses).where(eq(businesses.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
   }
 
   async getAllBusinesses(): Promise<Business[]> {
@@ -322,7 +322,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteProperty(id: number): Promise<boolean> {
     const result = await db.delete(properties).where(eq(properties.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
   }
 
   async getAllProperties(): Promise<Property[]> {
@@ -363,7 +363,7 @@ export class DatabaseStorage implements IStorage {
 
   async deletePermit(id: number): Promise<boolean> {
     const result = await db.delete(permits).where(eq(permits.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
   }
 
   async getAllPermits(): Promise<Permit[]> {
@@ -395,7 +395,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteCriminalRecord(id: number): Promise<boolean> {
     const result = await db.delete(criminalRecords).where(eq(criminalRecords.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
   }
 
   async getAllCriminalRecords(): Promise<CriminalRecord[]> {

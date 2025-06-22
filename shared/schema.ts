@@ -4,7 +4,7 @@ import { z } from "zod";
 import { relations } from "drizzle-orm";
 
 // Users table for authentication and role management
-export const users = pgTable("users", {
+export const users: any = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
@@ -12,7 +12,7 @@ export const users = pgTable("users", {
   department: text("department"), // MPD, FHP, FSD, DMV, ICE, IRS, IT
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  createdBy: integer("created_by").references(() => users.id),
+  createdBy: integer("created_by").references((): any => users.id),
 });
 
 // Citizens table - core citizen information

@@ -68,7 +68,7 @@ export default function CriminalRecords() {
       record.crimeType.toLowerCase().includes(searchTerm.toLowerCase()) ||
       record.citizenId.toString().includes(searchTerm);
     
-    const matchesStatus = statusFilter === "" || record.status === statusFilter;
+    const matchesStatus = statusFilter === "" || statusFilter === "all" || record.status === statusFilter;
     
     return matchesSearch && matchesStatus;
   });
@@ -160,7 +160,7 @@ export default function CriminalRecords() {
                 <SelectValue placeholder="All Status" />
               </SelectTrigger>
               <SelectContent className="bg-slate-700 border-slate-600">
-                <SelectItem value="" className="text-white">All Status</SelectItem>
+                <SelectItem value="all" className="text-white">All Status</SelectItem>
                 <SelectItem value="active" className="text-white">Active</SelectItem>
                 <SelectItem value="resolved" className="text-white">Resolved</SelectItem>
                 <SelectItem value="warrant" className="text-white">Warrant</SelectItem>

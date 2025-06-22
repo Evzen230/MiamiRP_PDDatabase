@@ -82,7 +82,7 @@ export default function UserManagement() {
       user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (user.department && user.department.toLowerCase().includes(searchTerm.toLowerCase()));
     
-    const matchesRole = roleFilter === "" || user.role === roleFilter;
+    const matchesRole = roleFilter === "" || roleFilter === "all" || user.role === roleFilter;
     
     return matchesSearch && matchesRole;
   });
@@ -201,7 +201,7 @@ export default function UserManagement() {
                 <SelectValue placeholder="All Roles" />
               </SelectTrigger>
               <SelectContent className="bg-slate-700 border-slate-600">
-                <SelectItem value="" className="text-white">All Roles</SelectItem>
+                <SelectItem value="all" className="text-white">All Roles</SelectItem>
                 {roles.map(role => (
                   <SelectItem key={role.value} value={role.value} className="text-white">
                     {role.label}

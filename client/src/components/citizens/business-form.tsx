@@ -23,6 +23,7 @@ export default function BusinessForm({ citizenId, onClose, onSuccess }: Business
     businessLicense: "",
     type: "",
     address: "",
+    isActive: true,
   });
 
   const createMutation = useMutation({
@@ -79,6 +80,17 @@ export default function BusinessForm({ citizenId, onClose, onSuccess }: Business
               onChange={(e) => handleInputChange("businessName", e.target.value)}
               className="bg-slate-700 border-slate-600 text-white"
               placeholder="e.g., Miami Burger Joint"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-slate-300">Business License Number</Label>
+            <Input
+              value={formData.businessLicense}
+              onChange={(e) => handleInputChange("businessLicense", e.target.value)}
+              className="bg-slate-700 border-slate-600 text-white"
+              placeholder="e.g., BL-2024-001"
               required
             />
           </div>

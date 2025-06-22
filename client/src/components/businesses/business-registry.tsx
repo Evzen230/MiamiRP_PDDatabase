@@ -70,7 +70,7 @@ export default function BusinessRegistry() {
                     <TableCell className="text-slate-300">
                       Owner ID: {business.ownerId}
                     </TableCell>
-                    <TableCell className="text-slate-300">{business.businessType}</TableCell>
+                    <TableCell className="text-slate-300">{business.type}</TableCell>
                     <TableCell className="text-slate-300">{business.businessLicense}</TableCell>
                     <TableCell>
                       <Badge variant={business.isActive ? "default" : "secondary"} 
